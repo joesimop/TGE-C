@@ -4,9 +4,9 @@
 core_t initCore() {
     core_t engine;
     VkInstance instance;
-    engine.window = initWindow();
-    InitVulkan(&engine.instance);
-    setupDebugMessenger(&engine.instance);
+    init_window(&engine.window);
+    init_vulkan(&engine.instance);
+    setup_debug_messenger(&engine.instance);
     return engine;
 }
 
@@ -17,8 +17,8 @@ void run(core_t* engine) {
 }
 
 void destroy(core_t* engine) {
-    if (enableValidationLayers) {
-        DestroyDebugMessenger(engine->instance);
+    if (ENABLE_VALIDATION_LAYERS) {
+        destroy_debug_messenger(engine->instance);
     }
     vkDestroyInstance(engine->instance, NULL);
     glfwDestroyWindow(engine->window);

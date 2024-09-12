@@ -3,16 +3,16 @@
 #include <stdbool.h>
 #include <vulkan/vulkan.h>
 
-static const char* validationLayers[] = {
+static const char* VALIDATION_LAYERS[] = {
     "VK_LAYER_KHRONOS_validation"
 };
     
 
 #ifdef DEBUG
-    static const bool enableValidationLayers = true;
+    static const bool ENABLE_VALIDATION_LAYERS = true;
 #else
-    static const bool enableValidationLayers = false;
+    static const bool ENABLE_VALIDATION_LAYERS = false;
 #endif
 
 ///The global debug messenger struct
-VkDebugUtilsMessengerEXT debugMessenger;
+VkDebugUtilsMessengerEXT g_debugMessenger;

@@ -12,6 +12,6 @@ static const u32 HEIGHT = 600;
 
 ///Initializes the GLFW window
 /// @return The GLFW window
-GLFWwindow* initWindow();
+void init_window(GLFWwindow* window);
 
 #endif

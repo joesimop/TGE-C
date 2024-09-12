@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 //Global debug messenger information
-VkDebugUtilsMessengerEXT debugMessenger;
+VkDebugUtilsMessengerEXT g_debugMessenger;
 VkDebugUtilsMessengerCreateInfoEXT debugCreateInfoCreateDestroy;
 
 ///Callback function for the debug messenger
@@ -17,7 +17,7 @@ VkDebugUtilsMessengerCreateInfoEXT debugCreateInfoCreateDestroy;
 /// @param messageType The type of the message
 /// @param pCallbackData The callback data
 /// @param pUserData The user data
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
@@ -25,14 +25,14 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 );
 
 ///Sets up the debug messenger
-void setupDebugMessenger(VkInstance *instance);
+void setup_debug_messenger(VkInstance *instance);
 
 ///Sets constants for the debug messenger
-void populateDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT *createInfo);
+void populate_debug_messenger(VkDebugUtilsMessengerCreateInfoEXT *createInfo);
 
 //Proxy to create/destroy debug extension object 
-VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-void DestroyDebugUtilsMessengerEXT(VkInstance instance, const VkAllocationCallbacks* pAllocator);
-void DestroyDebugMessenger(VkInstance instance);
+VkResult __create_debug_utils_messenger_ext(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+void __destroy_debug_utils_messenger_ext(VkInstance instance, const VkAllocationCallbacks* pAllocator);
+void destroy_debug_messenger(VkInstance instance);
 
 #endif

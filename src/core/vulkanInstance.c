@@ -5,20 +5,20 @@
 #include "global.h"
 
 
-void InitVulkan(VkInstance *instance) {
+void init_vulkan(VkInstance *instance) {
 
     //Check if required validation layers are supported
-    if(enableValidationLayers && !checkValidationLayerSupport()) {
+    if(ENABLE_VALIDATION_LAYERS && !__check_validation_layer_support()) {
         perror("Validation layers requested, but not available!");
     }
-    *instance = createVulkanInstance();    
+    *instance = create_vulkan_instance();    
 }
 
-VkInstance createVulkanInstance(){
+VkInstance create_vulkan_instance(){
     VkInstance instance;
 
     VkApplicationInfo appInfo;
-    createAppInfo(&appInfo);
+    __create_app_info(&appInfo);
 
     VkInstanceCreateInfo createInfo;
     createInfo.pApplicationInfo = &appInfo;
@@ -27,7 +27,7 @@ VkInstance createVulkanInstance(){
     //Necessary for MoltenSDK on macOS
     createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
 
-    configureExtensions(&createInfo);
+    __configure_extensions(&createInfo);
 
     ASSERT(vkCreateInstance(&createInfo, NULL, &instance) == VK_SUCCESS, "Failed to create instance!");
 
@@ -38,7 +38,7 @@ VkInstance createVulkanInstance(){
     return instance;
 }
 
-void createAppInfo(VkApplicationInfo* appInfo) {
+void __create_app_info(VkApplicationInfo* appInfo) {
 
     appInfo->sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo->pApplicationName = "Hello Triangle";
@@ -50,7 +50,7 @@ void createAppInfo(VkApplicationInfo* appInfo) {
 
 }
 
-const char** getRequiredExtensions() {
+const char** __get_required_extensions() {
 
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -59,7 +59,7 @@ const char** getRequiredExtensions() {
     DYNAMIC_ARRAY(const char *) allExtenstions = NULL;
     da_init_from_data(allExtenstions, glfwExtensions);
 
-    if (enableValidationLayers) {
+    if (ENABLE_VALIDATION_LAYERS) {
 
         //Add the debug utils extension
         const char** extraDebugUtils = da_push(allExtenstions);
@@ -73,23 +73,23 @@ const char** getRequiredExtensions() {
     return allExtenstions;
 }
 
-void configureExtensions(VkInstanceCreateInfo* createInfo) {
+void __configure_extensions(VkInstanceCreateInfo* createInfo) {
 
     u32 glfwExtensionCount = 0;
     const char** glfwExtensions;
 
-    glfwExtensions = getRequiredExtensions();
+    glfwExtensions = __get_required_extensions();
 
     createInfo->enabledExtensionCount = (u32) da_size(glfwExtensions);
     createInfo->ppEnabledExtensionNames = glfwExtensions;
 
 
-    if(enableValidationLayers){
-        createInfo->enabledLayerCount = ARRAY_SIZE(validationLayers);
-        createInfo->ppEnabledLayerNames = validationLayers;
+    if(ENABLE_VALIDATION_LAYERS){
+        createInfo->enabledLayerCount = ARRAY_SIZE(VALIDATION_LAYERS);
+        createInfo->ppEnabledLayerNames = VALIDATION_LAYERS;
 
         //Enable debug messenger for create and destroy calls
-        // populateDebugMessenger(&debugCreateInfoCreateDestroy);
+        // populate_debug_messenger(&debugCreateInfoCreateDestroy);
         // createInfo->pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfoCreateDestroy;
 
     } else {
@@ -99,7 +99,7 @@ void configureExtensions(VkInstanceCreateInfo* createInfo) {
 
 }
 
-bool checkValidationLayerSupport() {
+bool __check_validation_layer_support() {
 
     //Get the layers supported by the Vulkan runtime
     uint32_t layerCount;
@@ -109,10 +109,10 @@ bool checkValidationLayerSupport() {
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers);
 
     //Check if the layers we want are supported
-    for (int i = 0; i < ARRAY_SIZE(validationLayers); i++) {
+    for (int i = 0; i < ARRAY_SIZE(VALIDATION_LAYERS); i++) {
 
         //Current Validation Layer we are checking
-        const char* layerName = validationLayers[i];
+        const char* layerName = VALIDATION_LAYERS[i];
         bool layerFound = false;
 
         //Go through the Vulkan runtime layers and check for support
