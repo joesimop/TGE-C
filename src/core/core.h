@@ -5,6 +5,7 @@
 #include "glfw_init.h"
 #include "vulkanInstance.h"
 #include "vulkanDebugMessenger.h"
+#include "physicalDevice.h"
 
 
 typedef struct {
