@@ -4,7 +4,7 @@
 core_t initCore() {
     core_t engine;
     VkInstance instance;
-    init_window(&engine.window);
+    init_window(engine.window);
     init_vulkan(&engine.instance);
     setup_debug_messenger(&engine.instance);
     return engine;

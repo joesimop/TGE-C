@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef CORE_H
+#define CORE_H
 #include "glfw_init.h"
 #include "vulkanInstance.h"
 #include "vulkanDebugMessenger.h"
 
 
-typedef struct Engine {
+typedef struct {
     GLFWwindow* window;
     VkInstance instance;
 } core_t;

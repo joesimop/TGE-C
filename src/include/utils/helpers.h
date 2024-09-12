@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <stdio.h>
 
 //HELPERS
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
