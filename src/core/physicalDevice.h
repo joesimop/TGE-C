@@ -15,7 +15,7 @@ typedef struct {
 
 
 //Enumerates and picks the physical device based on __is_device_suitable()
-void pick_physical_device(VkInstance *instance,VkPhysicalDevice *physicalDevice);
+void pick_physical_device(VkInstance instance,VkPhysicalDevice *physicalDevice);
 
 //Returns true if the device is suitable for the application
 //Right now, just returns true, implementation depends on the application

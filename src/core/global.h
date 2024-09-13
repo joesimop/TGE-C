@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include <vulkan/vulkan.h>
 
+#define VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME "VK_KHR_portability_subset"
+#define VK_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME "VK_KHR_get_physical_device_properties2"
+
 static const char* VALIDATION_LAYERS[] = {
     "VK_LAYER_KHRONOS_validation"
 };

@@ -1,17 +1,17 @@
 #include "physicalDevice.h"
 
-void pick_physical_device(VkInstance *instance, VkPhysicalDevice *physicalDevice) {
+void pick_physical_device(VkInstance instance, VkPhysicalDevice *physicalDevice) {
 
     //Query vulkan for the number of devices
     u32 deviceCount = 0;
-    vkEnumeratePhysicalDevices(*instance, &deviceCount, NULL);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
 
     ASSERT(deviceCount != 0, "Failed to find GPUs with Vulkan support!");
 
     //If there are devices, populate them into a dynamic array
     DYNAMIC_ARRAY(VkPhysicalDevice) devices = NULL;
     da_init(devices, deviceCount);
-    vkEnumeratePhysicalDevices(*instance, &deviceCount, devices);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
 
     //Find one that is suitable and break.
     for (int i = 0; i < deviceCount; i++) {
@@ -20,6 +20,8 @@ void pick_physical_device(VkInstance *instance, VkPhysicalDevice *physicalDevice
             break;
         }
     }
+
+
 
     ASSERT(*physicalDevice != VK_NULL_HANDLE, "Failed to find a suitable GPU!");
 
@@ -45,7 +47,7 @@ bool __is_device_suitable(VkPhysicalDevice device) {
 }
 
 QueueFamilyIndices __find_queue_families(VkPhysicalDevice device) {
-    
+
     QueueFamilyIndices families;
 
     //Get the number of queue families

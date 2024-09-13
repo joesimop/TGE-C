@@ -7,6 +7,8 @@ core_t initCore() {
     init_window(&engine.window);
     init_vulkan(&engine.instance);
     setup_debug_messenger(&engine.instance);
+    pick_physical_device(engine.instance, &engine.physicalDevice);
+    create_logical_device(engine.physicalDevice, &engine.logicalDevice, &engine.graphicsQueue);
     return engine;
 }
 
@@ -22,6 +24,7 @@ void destroy(core_t* engine) {
     if (ENABLE_VALIDATION_LAYERS) {
         destroy_debug_messenger(engine->instance);
     }
+    destroy_logical_device(engine->logicalDevice);
     vkDestroyInstance(engine->instance, NULL);
     glfwDestroyWindow(engine->window);
     glfwTerminate();

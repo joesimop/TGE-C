@@ -69,6 +69,9 @@ const char** __get_required_extensions() {
     //Necessary for MoltenSDK on macOS
     const char** portability_enumeration = da_push(allExtenstions);
     *portability_enumeration = VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
+
+    const char** portability_subset = da_push(allExtenstions);
+    *portability_subset = VK_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME;
     
     return allExtenstions;
 }

@@ -6,11 +6,15 @@
 #include "vulkanInstance.h"
 #include "vulkanDebugMessenger.h"
 #include "physicalDevice.h"
+#include "logicalDevice.h"
 
 
 typedef struct {
     GLFWwindow* window;
     VkInstance instance;
+    VkPhysicalDevice physicalDevice;
+    VkDevice logicalDevice;
+    VkQueue graphicsQueue;
 } core_t;
 
 
