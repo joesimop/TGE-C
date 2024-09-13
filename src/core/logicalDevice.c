@@ -10,7 +10,7 @@ void create_logical_device(VkPhysicalDevice physicalDevice, VkDevice* device, Vk
     //for now, we will just use the default features
     //(might want to pass as a parameter to both physical and logical)
     VkPhysicalDeviceFeatures deviceFeatures;
-    __init_device_features(&deviceFeatures);
+    __init_device_features_all_false(&deviceFeatures);
 
     VkDeviceCreateInfo deviceCreateInfo;
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -75,7 +75,7 @@ void destroy_logical_device(VkDevice device) {
 }
 
 //Sets all values in the device features to false
-void __init_device_features(VkPhysicalDeviceFeatures* deviceFeatures) {
+void __init_device_features_all_false(VkPhysicalDeviceFeatures* deviceFeatures) {
     deviceFeatures->robustBufferAccess = VK_FALSE;
     deviceFeatures->fullDrawIndexUint32 = VK_FALSE;
     deviceFeatures->imageCubeArray = VK_FALSE;

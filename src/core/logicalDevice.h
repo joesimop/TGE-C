@@ -18,7 +18,7 @@ varying requirements.
 void create_logical_device(VkPhysicalDevice physicalDevice, VkDevice* device, VkQueue* graphicsQueue);
 
 //Sets values for all desired device features
-void __init_device_features(VkPhysicalDeviceFeatures* deviceFeatures);
+void __init_device_features_all_false(VkPhysicalDeviceFeatures* deviceFeatures);
 
 //Creates the queue create info for the
 //logical device based on a chosen physical device
