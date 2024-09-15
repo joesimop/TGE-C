@@ -1,10 +1,9 @@
 #pragma once
 
-#ifndef CORE_H
-#define CORE_H
 #include "glfw_init.h"
 #include "vulkanInstance.h"
 #include "vulkanDebugMessenger.h"
+#include "windowSurface.h"
 #include "physicalDevice.h"
 #include "logicalDevice.h"
 
@@ -12,9 +11,11 @@
 typedef struct {
     GLFWwindow* window;
     VkInstance instance;
+    VkSurfaceKHR surface;
     VkPhysicalDevice physicalDevice;
     VkDevice logicalDevice;
     VkQueue graphicsQueue;
+    VkQueue presentQueue;
 } core_t;
 
 
@@ -23,7 +24,3 @@ typedef struct {
 core_t initCore();
 void destroy(core_t* engine);
 void run(core_t* engine);
-
-
-
-#endif

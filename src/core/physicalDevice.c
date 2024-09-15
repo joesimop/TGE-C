@@ -1,6 +1,6 @@
 #include "physicalDevice.h"
 
-void pick_physical_device(VkInstance instance, VkPhysicalDevice *physicalDevice) {
+void pick_physical_device(VkInstance instance, VkSurfaceKHR surface, VkPhysicalDevice *physicalDevice) {
 
     //Query vulkan for the number of devices
     u32 deviceCount = 0;
@@ -15,7 +15,7 @@ void pick_physical_device(VkInstance instance, VkPhysicalDevice *physicalDevice)
 
     //Find one that is suitable and break.
     for (int i = 0; i < deviceCount; i++) {
-        if (__is_device_suitable(devices[i])) {
+        if (__is_device_suitable(devices[i], surface)) {
             *physicalDevice = devices[i];
             break;
         }
@@ -29,7 +29,7 @@ void pick_physical_device(VkInstance instance, VkPhysicalDevice *physicalDevice)
     da_free(devices);
 }
 
-bool __is_device_suitable(VkPhysicalDevice device) {
+bool __is_device_suitable(VkPhysicalDevice device, VkSurfaceKHR surface) {
     
     //First get the properties of the device
     //This includes the name, type, and supported Vulkan version
@@ -41,18 +41,19 @@ bool __is_device_suitable(VkPhysicalDevice device) {
     // VkPhysicalDeviceFeatures deviceFeatures;
     // vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    QueueFamilyIndices indices = __find_queue_families(device);
+    QueueFamilyIndices indices = __find_queue_families(device, surface);
 
-    return has_value(indices.graphicsFamily);
+    return __is_valid_queue_family(indices);
 }
 
-QueueFamilyIndices __find_queue_families(VkPhysicalDevice device) {
+QueueFamilyIndices __find_queue_families(VkPhysicalDevice device, VkSurfaceKHR surface) {
 
     QueueFamilyIndices families;
 
     //Get the number of queue families
     u32 queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, NULL);
+
 
     //If there are queue families, populate them into a dynamic array
     if (queueFamilyCount != 0) {
@@ -62,10 +63,19 @@ QueueFamilyIndices __find_queue_families(VkPhysicalDevice device) {
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies);
 
         //Find a queue family that supports graphics
+        VkBool32 presentSupport = false;
         for (int i = 0; i < queueFamilyCount; i++) {
             if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                set_opt(families.graphicsFamily, i);
-                break;
+
+                //Check if the queue family supports presenting
+                vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+                //Only return value if both surface and graphics support the queue family
+                if (presentSupport) {
+                    set_opt(families.graphicsFamily, i);
+                    set_opt(families.presentFamily, i);
+                    break;
+                }
             }
         }
     }

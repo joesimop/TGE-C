@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef VULKAN_DEBUG_MESSENGER_H
-#define VULKAN_DEBUG_MESSENGER_H
 #define GLFW_INCLUDE_VULKAN
 #include "global.h"
 #include "../include/utils/helpers.h"
@@ -34,5 +32,3 @@ void populate_debug_messenger(VkDebugUtilsMessengerCreateInfoEXT *createInfo);
 VkResult __create_debug_utils_messenger_ext(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 void __destroy_debug_utils_messenger_ext(VkInstance instance, const VkAllocationCallbacks* pAllocator);
 void destroy_debug_messenger(VkInstance instance);
-
-#endif

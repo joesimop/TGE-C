@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef VULKAN_INSTANCE_H
-#define VULKAN_INSTANCE_H
 #define GLFW_INCLUDE_VULKAN
 
 #include "GLFW/glfw3.h"
@@ -28,7 +26,3 @@ const char** __get_required_extensions();
 ///Returns true if the all requested validation layers are supported
 bool __check_validation_layer_support();
 
-
-
-
-#endif

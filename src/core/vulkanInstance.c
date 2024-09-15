@@ -67,6 +67,9 @@ const char** __get_required_extensions() {
     }
 
     //Necessary for MoltenSDK on macOS
+    const char** macos_surface = da_push(allExtenstions);   //NOTE: this should be returned by glfwGetRequiredInstanceExtensions
+    *macos_surface = VK_EXT_METAL_SURFACE_EXTENSION_NAME;   //      but is currently broken, so we add it manually
+
     const char** portability_enumeration = da_push(allExtenstions);
     *portability_enumeration = VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
 
@@ -85,7 +88,6 @@ void __configure_extensions(VkInstanceCreateInfo* createInfo) {
 
     createInfo->enabledExtensionCount = (u32) da_size(glfwExtensions);
     createInfo->ppEnabledExtensionNames = glfwExtensions;
-
 
     if(ENABLE_VALIDATION_LAYERS){
         createInfo->enabledLayerCount = ARRAY_SIZE(VALIDATION_LAYERS);

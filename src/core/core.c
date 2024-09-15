@@ -7,8 +7,9 @@ core_t initCore() {
     init_window(&engine.window);
     init_vulkan(&engine.instance);
     setup_debug_messenger(&engine.instance);
-    pick_physical_device(engine.instance, &engine.physicalDevice);
-    create_logical_device(engine.physicalDevice, &engine.logicalDevice, &engine.graphicsQueue);
+    create_surface(engine.instance, engine.window, &engine.surface);
+    pick_physical_device(engine.instance, engine.surface, &engine.physicalDevice);
+    create_logical_device(engine.physicalDevice, engine.surface, &engine.logicalDevice, &engine.graphicsQueue);
     return engine;
 }
 
@@ -25,6 +26,7 @@ void destroy(core_t* engine) {
         destroy_debug_messenger(engine->instance);
     }
     destroy_logical_device(engine->logicalDevice);
+    vkDestroySurfaceKHR(engine->instance, engine->surface, NULL);
     vkDestroyInstance(engine->instance, NULL);
     glfwDestroyWindow(engine->window);
     glfwTerminate();

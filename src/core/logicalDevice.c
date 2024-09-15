@@ -1,10 +1,10 @@
 #include "logicalDevice.h"
 
-void create_logical_device(VkPhysicalDevice physicalDevice, VkDevice* device, VkQueue* graphicsQueue) {
+void create_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDevice* device, VkQueue* graphicsQueue) {
     
     
     VkDeviceQueueCreateInfo queueCreateInfo;
-    __populate_queue_info_for_logical_device(physicalDevice, &queueCreateInfo);
+    __populate_queue_info_for_logical_device(physicalDevice, surface, &queueCreateInfo);
 
     //Specifiy the device features that will be used,
     //for now, we will just use the default features
@@ -14,8 +14,8 @@ void create_logical_device(VkPhysicalDevice physicalDevice, VkDevice* device, Vk
 
     VkDeviceCreateInfo deviceCreateInfo;
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
-    deviceCreateInfo.queueCreateInfoCount = 1;
+    deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;     //Can be multiple if multiple queues returned by __find_queue_families()
+    deviceCreateInfo.queueCreateInfoCount = 1;                 //Number of queue families returned by __find_queue_families()
     deviceCreateInfo.flags = 0;
     deviceCreateInfo.pNext = NULL;
 
@@ -30,11 +30,14 @@ void create_logical_device(VkPhysicalDevice physicalDevice, VkDevice* device, Vk
 
 }
 
-void __populate_queue_info_for_logical_device(VkPhysicalDevice physicalDevice, VkDeviceQueueCreateInfo* queueCreateInfo) {
+void __populate_queue_info_for_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDeviceQueueCreateInfo* queueCreateInfo) {
 
-    QueueFamilyIndices indices = __find_queue_families(physicalDevice);
+    QueueFamilyIndices indices = __find_queue_families(physicalDevice, surface);
 
-    ASSERT(has_value(indices.graphicsFamily), "Failed to find a suitable queue family for logical device!");
+    ASSERT(__is_valid_queue_family(indices), "Failed to find a suitable queue families for surface and/or physical device!");
+
+    //Right now, with the __find_queue_families() function, the graphics and present families should be the same.
+    ASSERT(indices.graphicsFamily.value == indices.presentFamily.value, "Graphics and Present queue families are not the same!");
     queueCreateInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     queueCreateInfo->queueFamilyIndex = indices.graphicsFamily.value;
     queueCreateInfo->queueCount = 1;
