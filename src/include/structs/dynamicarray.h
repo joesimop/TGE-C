@@ -18,8 +18,8 @@ typedef struct {
 #define da_start(_da) (((void*)(_da)) - DA_HEADER_SIZE)
 #define da_size(_da)     ((da_header_t*) da_start((_da)))->size
 #define da_capacity(_da) ((da_header_t*) da_start((_da)))->capacity
-#define set_size(_da, _s)    ((da_header_t*) da_start((_da)))->size = (_s)
-#define set_capacity(_da, _c) ((da_header_t*) da_start((_da)))->capacity = (_c)
+#define da_set_size(_da, _s)    ((da_header_t*) da_start((_da)))->size = (_s)
+#define da_set_capacity(_da, _c) ((da_header_t*) da_start((_da)))->capacity = (_c)
 
 //INTERNAL USE ONLY
 

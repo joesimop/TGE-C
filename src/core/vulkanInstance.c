@@ -67,14 +67,11 @@ const char** __get_required_extensions() {
     }
 
     //Necessary for MoltenSDK on macOS
-    const char** macos_surface = da_push(allExtenstions);   //NOTE: this should be returned by glfwGetRequiredInstanceExtensions
-    *macos_surface = VK_EXT_METAL_SURFACE_EXTENSION_NAME;   //      but is currently broken, so we add it manually
+    *da_push(allExtenstions) = VK_EXT_METAL_SURFACE_EXTENSION_NAME;  //Should be returned by glfwGetRequiredInstanceExtensions
 
-    const char** portability_enumeration = da_push(allExtenstions);
-    *portability_enumeration = VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
+    *da_push(allExtenstions) = VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME;
 
-    const char** portability_subset = da_push(allExtenstions);
-    *portability_subset = VK_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME;
+    *da_push(allExtenstions) = VK_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME;
     
     return allExtenstions;
 }

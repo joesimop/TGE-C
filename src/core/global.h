@@ -10,6 +10,10 @@
 static const char* VALIDATION_LAYERS[] = {
     "VK_LAYER_KHRONOS_validation"
 };
+
+static const char* DEVICE_EXTENSIONS[] = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
     
 
 #ifdef DEBUG

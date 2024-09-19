@@ -61,7 +61,12 @@ void __enable_device_specific_extensions(VkDeviceCreateInfo* deviceCreateInfo) {
     da_init(deviceSpecificExtensions, 1);
     *da_push(deviceSpecificExtensions) = VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME;
 
-    deviceCreateInfo->enabledExtensionCount = 1;
+    //Iterate through the required device extensions and add them
+    for(int i = 0; i < ARRAY_SIZE(DEVICE_EXTENSIONS); i++) {
+        *da_push(deviceSpecificExtensions) = DEVICE_EXTENSIONS[i];
+    }
+
+    deviceCreateInfo->enabledExtensionCount = da_size(deviceSpecificExtensions);
     deviceCreateInfo->ppEnabledExtensionNames = deviceSpecificExtensions;
 
     if(ENABLE_VALIDATION_LAYERS){

@@ -10,6 +10,7 @@ core_t initCore() {
     create_surface(engine.instance, engine.window, &engine.surface);
     pick_physical_device(engine.instance, engine.surface, &engine.physicalDevice);
     create_logical_device(engine.physicalDevice, engine.surface, &engine.logicalDevice, &engine.graphicsQueue);
+    create_swap_chain(engine.physicalDevice, engine.logicalDevice, engine.surface, engine.window, &engine.swapChain);
     return engine;
 }
 
@@ -22,9 +23,12 @@ void run(core_t* engine) {
 }
 
 void destroy(core_t* engine) {
+
     if (ENABLE_VALIDATION_LAYERS) {
         destroy_debug_messenger(engine->instance);
     }
+
+    vkDestroySwapchainKHR(engine->logicalDevice, engine->swapChain, NULL);
     destroy_logical_device(engine->logicalDevice);
     vkDestroySurfaceKHR(engine->instance, engine->surface, NULL);
     vkDestroyInstance(engine->instance, NULL);

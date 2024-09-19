@@ -6,6 +6,7 @@
 #include "windowSurface.h"
 #include "physicalDevice.h"
 #include "logicalDevice.h"
+#include "swapChain.h"
 
 
 typedef struct {
@@ -16,6 +17,7 @@ typedef struct {
     VkDevice logicalDevice;
     VkQueue graphicsQueue;
     VkQueue presentQueue;
+    VkSwapchainKHR swapChain;
 } core_t;
 
 
