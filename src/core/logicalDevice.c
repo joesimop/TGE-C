@@ -1,10 +1,10 @@
 #include "logicalDevice.h"
 
-void create_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDevice* device, VkQueue* graphicsQueue) {
+void create_logical_device(VulkanCore* core) {
     
     
     VkDeviceQueueCreateInfo queueCreateInfo;
-    __populate_queue_info_for_logical_device(physicalDevice, surface, &queueCreateInfo);
+    __populate_queue_info_for_logical_device(core->indices, &queueCreateInfo);
 
     //Specifiy the device features that will be used,
     //for now, we will just use the default features
@@ -23,16 +23,14 @@ void create_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface
 
     __enable_device_specific_extensions(&deviceCreateInfo);
 
-    ASSERT(vkCreateDevice(physicalDevice, &deviceCreateInfo, NULL, device) == VK_SUCCESS, "Failed to create logical device!");
+    ASSERT(vkCreateDevice(core->physicalDevice, &deviceCreateInfo, NULL, &core->logicalDevice) == VK_SUCCESS, "Failed to create logical device!");
 
     //Populate the graphics queue from the logical device
-    vkGetDeviceQueue(*device, queueCreateInfo.queueFamilyIndex, 0, graphicsQueue);
+    vkGetDeviceQueue(core->logicalDevice, queueCreateInfo.queueFamilyIndex, 0, &core->graphicsQueue);
 
 }
 
-void __populate_queue_info_for_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDeviceQueueCreateInfo* queueCreateInfo) {
-
-    QueueFamilyIndices indices = __find_queue_families(physicalDevice, surface);
+void __populate_queue_info_for_logical_device(QueueFamilyIndices indices, VkDeviceQueueCreateInfo* queueCreateInfo) {
 
     ASSERT(__is_valid_queue_family(indices), "Failed to find a suitable queue families for surface and/or physical device!");
 

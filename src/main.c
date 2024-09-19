@@ -3,7 +3,7 @@
 
 int main() {
 
-    core_t engine = initCore();
+    VulkanCore engine = initCore();
     run(&engine);
     destroy(&engine);
 

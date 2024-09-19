@@ -1,12 +1,12 @@
 #include "swapChain.h"
 
 
-void create_swap_chain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, VkSurfaceKHR surface, GLFWwindow* window, VkSwapchainKHR* swapChain) {
-    SwapChainSupportDetails details = query_swap_chain_specs(physicalDevice, surface);
+void create_swap_chain(VulkanCore* core) {
+    SwapChainSupportDetails details = query_swap_chain_specs(core->physicalDevice, core->surface);
 
     VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(details.formats);
     VkPresentModeKHR presentMode = choose_swap_present_mode(details.presentModes);
-    VkExtent2D extent = choose_swap_extent(&details.capabilities, window);
+    VkExtent2D extent = choose_swap_extent(&details.capabilities, core->window);
 
     u32 imageCount = details.capabilities.minImageCount + 1;
     if (details.capabilities.maxImageCount > 0 && imageCount > details.capabilities.maxImageCount) {
@@ -15,7 +15,7 @@ void create_swap_chain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, 
 
     VkSwapchainCreateInfoKHR createInfo = {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-        .surface = surface,
+        .surface = core->surface,
         .minImageCount = imageCount,
         .imageFormat = surfaceFormat.format,
         .imageColorSpace = surfaceFormat.colorSpace,
@@ -30,22 +30,23 @@ void create_swap_chain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, 
         .oldSwapchain = VK_NULL_HANDLE
     };
 
-    QueueFamilyIndices indices = __find_queue_families(physicalDevice, surface);
-    u32 queueFamilyIndices[] = {indices.graphicsFamily.value, indices.presentFamily.value};
+    u32 graphicsFamily = core->indices.graphicsFamily.value;
+    u32 presentFamily = core->indices.presentFamily.value;
+    u32 indices[] = {graphicsFamily, presentFamily};
 
     //If we have two different queue families, we use concurrent sharing mode
     //This avoids us from having to do ownership transfers
-    if (indices.graphicsFamily.value != indices.presentFamily.value) {
+    if (graphicsFamily != presentFamily) {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;
-        createInfo.pQueueFamilyIndices = queueFamilyIndices;
+        createInfo.pQueueFamilyIndices = indices;
     } else {
         createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         createInfo.queueFamilyIndexCount = 0;
         createInfo.pQueueFamilyIndices = NULL;
     }
 
-    ASSERT(vkCreateSwapchainKHR(logicalDevice, &createInfo, NULL, swapChain) == VK_SUCCESS, "Failed to create swap chain");
+    ASSERT(vkCreateSwapchainKHR(core->logicalDevice, &createInfo, NULL, &core->swapChain) == VK_SUCCESS, "Failed to create swap chain");
 
 }
 

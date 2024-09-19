@@ -1,37 +1,35 @@
 #include "core.h"
-#include "global.h"
 
-core_t initCore() {
-    core_t engine;
-    VkInstance instance;
-    init_window(&engine.window);
-    init_vulkan(&engine.instance);
-    setup_debug_messenger(&engine.instance);
-    create_surface(engine.instance, engine.window, &engine.surface);
-    pick_physical_device(engine.instance, engine.surface, &engine.physicalDevice);
-    create_logical_device(engine.physicalDevice, engine.surface, &engine.logicalDevice, &engine.graphicsQueue);
-    create_swap_chain(engine.physicalDevice, engine.logicalDevice, engine.surface, engine.window, &engine.swapChain);
-    return engine;
+VulkanCore initCore() {
+    VulkanCore core;
+    init_window(&core.window);
+    init_vulkan(&core.instance);
+    setup_debug_messenger(&core.instance);
+    create_surface(&core);
+    pick_physical_device(&core);
+    create_logical_device(&core);
+    create_swap_chain(&core);
+    return core;
 }
 
-void run(core_t* engine) {
+void run(VulkanCore* core) {
     printf("Running\n");
-    while (!glfwWindowShouldClose(engine->window)) {
+    while (!glfwWindowShouldClose(core->window)) {
         glfwPollEvents();
     }
     printf("Closing\n");
 }
 
-void destroy(core_t* engine) {
+void destroy(VulkanCore* core) {
 
     if (ENABLE_VALIDATION_LAYERS) {
-        destroy_debug_messenger(engine->instance);
+        destroy_debug_messenger(core->instance);
     }
 
-    vkDestroySwapchainKHR(engine->logicalDevice, engine->swapChain, NULL);
-    destroy_logical_device(engine->logicalDevice);
-    vkDestroySurfaceKHR(engine->instance, engine->surface, NULL);
-    vkDestroyInstance(engine->instance, NULL);
-    glfwDestroyWindow(engine->window);
+    vkDestroySwapchainKHR(core->logicalDevice, core->swapChain, NULL);
+    destroy_logical_device(core->logicalDevice);
+    vkDestroySurfaceKHR(core->instance, core->surface, NULL);
+    vkDestroyInstance(core->instance, NULL);
+    glfwDestroyWindow(core->window);
     glfwTerminate();
 }

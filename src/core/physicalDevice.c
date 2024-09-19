@@ -1,36 +1,34 @@
 #include "physicalDevice.h"
 
-void pick_physical_device(VkInstance instance, VkSurfaceKHR surface, VkPhysicalDevice *physicalDevice) {
+void pick_physical_device(VulkanCore* core) {
 
     //Query vulkan for the number of devices
     u32 deviceCount = 0;
-    vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
+    vkEnumeratePhysicalDevices(core->instance, &deviceCount, NULL);
 
     ASSERT(deviceCount != 0, "Failed to find GPUs with Vulkan support!");
 
     //If there are devices, populate them into a dynamic array
     DYNAMIC_ARRAY(VkPhysicalDevice) devices = NULL;
     da_init(devices, deviceCount);
-    vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
+    vkEnumeratePhysicalDevices(core->instance, &deviceCount, devices);
 
     //Find one that is suitable and break.
-    *physicalDevice = VK_NULL_HANDLE;
+    core->physicalDevice = VK_NULL_HANDLE;
     for (int i = 0; i < deviceCount; i++) {
-        if (__is_device_suitable(devices[i], surface)) {
-            *physicalDevice = devices[i];
+        if (__is_device_suitable(devices[i], core)) {
+            core->physicalDevice = devices[i];
             break;
         }
     }
 
-
-
-    ASSERT(*physicalDevice != VK_NULL_HANDLE, "Failed to find a suitable GPU!");
+    ASSERT(core->physicalDevice != VK_NULL_HANDLE, "Failed to find a suitable GPU!");
 
     //Free the dynamic array
     da_free(devices);
 }
 
-bool __is_device_suitable(VkPhysicalDevice device, VkSurfaceKHR surface) {
+bool __is_device_suitable(VkPhysicalDevice device, VulkanCore* core) {
     
     //First get the properties of the device
     //This includes the name, type, and supported Vulkan version
@@ -43,7 +41,7 @@ bool __is_device_suitable(VkPhysicalDevice device, VkSurfaceKHR surface) {
     // vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
     //Make sure there are supported queue families
-    QueueFamilyIndices indices = __find_queue_families(device, surface);
+    QueueFamilyIndices indices = __find_queue_families(device, core->surface);
 
     //Check if the device supports the required extensions
     bool extensionsSupported = __check_device_extension_support(device);
@@ -51,14 +49,14 @@ bool __is_device_suitable(VkPhysicalDevice device, VkSurfaceKHR surface) {
     //Check if there is a valid interface for the swap chain and surface
     bool swapChainSupported = false;
     if(extensionsSupported){
-        SwapChainSupportDetails details = query_swap_chain_specs(device, surface);
-        printf("Formats: %d\n", da_size(details.formats));
-        printf("Present Modes: %d\n", da_size(details.presentModes));
+        SwapChainSupportDetails details = query_swap_chain_specs(device, core->surface);
         swapChainSupported = da_size(details.formats) > 0 && da_size(details.presentModes) > 0;
 
-        
         destroy_swap_chain_details(&details);
     }
+
+    //Set them here, if they are invalid, ASSERT outside of this function will catch it
+    core->indices = indices;
 
     //If all three, we are good to go
     return __is_valid_queue_family(indices) && extensionsSupported && swapChainSupported;

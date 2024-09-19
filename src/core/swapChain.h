@@ -15,7 +15,7 @@ typedef struct {
 
 
 //Creates the swap chain
-void create_swap_chain(VkPhysicalDevice device, VkDevice logicalDevice, VkSurfaceKHR surface, GLFWwindow* window, VkSwapchainKHR* swapChain);
+void create_swap_chain(VulkanCore* core);
 
 //Populates the swap chain support details
 SwapChainSupportDetails query_swap_chain_specs(VkPhysicalDevice device, VkSurfaceKHR surface);

@@ -12,14 +12,14 @@ varying requirements.
 
 //Creates the logical device based on a chosen physical device
 //Populates the logical device and associated graphics queues
-void create_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDevice* device, VkQueue* graphicsQueue);
+void create_logical_device(VulkanCore* core);
 
 //Sets values for all desired device features
 void __init_device_features_all_false(VkPhysicalDeviceFeatures* deviceFeatures);
 
 //Creates the queue create info for the
 //logical device based on a chosen physical device
-void __populate_queue_info_for_logical_device(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDeviceQueueCreateInfo* queueCreateInfo);
+void __populate_queue_info_for_logical_device(QueueFamilyIndices indices, VkDeviceQueueCreateInfo* queueCreateInfo);
 
 //Enables device specific extensions and v. layers
 void __enable_device_specific_extensions(VkDeviceCreateInfo* deviceCreateInfo);
