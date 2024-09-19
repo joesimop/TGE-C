@@ -3,8 +3,6 @@
 #include <vulkan/vulkan.h>
 #include "global.h"
 #include "swapChain.h"
-#include "../include/structs/dynamicarray.h"
-#include "../include/utils/types.h"
 
 
 //Enumerates and picks the physical device based on __is_device_suitable()

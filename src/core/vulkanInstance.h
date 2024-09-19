@@ -2,10 +2,12 @@
 
 #define GLFW_INCLUDE_VULKAN
 
+#include <stdbool.h>
 #include "GLFW/glfw3.h"
 #include "vulkanDebugMessenger.h"
-#include <stdbool.h>
+#include "global.h"
 
+#include "../include/utils/helpers.h"
 
 ///Creates the Vulkan instance
 void init_vulkan(VkInstance *instance);

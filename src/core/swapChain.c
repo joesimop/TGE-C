@@ -4,15 +4,21 @@
 void create_swap_chain(VulkanCore* core) {
     SwapChainSupportDetails details = query_swap_chain_specs(core->physicalDevice, core->surface);
 
+    //Choose the best settings for the swap chain
     VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(details.formats);
     VkPresentModeKHR presentMode = choose_swap_present_mode(details.presentModes);
     VkExtent2D extent = choose_swap_extent(&details.capabilities, core->window);
+
+    //Save the swap chain details for later
+    core->swapChainImageFormat = surfaceFormat.format;
+    core->swapChainExtent = extent;
 
     u32 imageCount = details.capabilities.minImageCount + 1;
     if (details.capabilities.maxImageCount > 0 && imageCount > details.capabilities.maxImageCount) {
         imageCount = details.capabilities.maxImageCount;
     }
 
+    //Create the swap chain
     VkSwapchainCreateInfoKHR createInfo = {
         .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
         .surface = core->surface,
@@ -47,6 +53,10 @@ void create_swap_chain(VulkanCore* core) {
     }
 
     ASSERT(vkCreateSwapchainKHR(core->logicalDevice, &createInfo, NULL, &core->swapChain) == VK_SUCCESS, "Failed to create swap chain");
+
+    //Init array of image handles
+    da_init(core->swapChainImages, imageCount);
+    ASSERT(vkGetSwapchainImagesKHR(core->logicalDevice, core->swapChain, &imageCount, core->swapChainImages) == VK_SUCCESS, "Failed to get swap chain images");
 
 }
 

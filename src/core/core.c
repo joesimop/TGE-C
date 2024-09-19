@@ -31,5 +31,6 @@ void destroy(VulkanCore* core) {
     vkDestroySurfaceKHR(core->instance, core->surface, NULL);
     vkDestroyInstance(core->instance, NULL);
     glfwDestroyWindow(core->window);
+    da_free(core->swapChainImages);
     glfwTerminate();
 }

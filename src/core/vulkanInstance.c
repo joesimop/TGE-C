@@ -1,8 +1,4 @@
 #include "vulkanInstance.h"
-#include "../include/utils/types.h"
-#include "../include/structs/dynamicarray.h"
-#include "../include/utils/helpers.h"
-#include "global.h"
 
 
 void init_vulkan(VkInstance *instance) {

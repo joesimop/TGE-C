@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../include/utils/types.h"
+#include "../include/structs/dynamicarray.h"
 
 #define VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME "VK_KHR_portability_subset"
 #define VK_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME "VK_KHR_get_physical_device_properties2"
@@ -48,9 +49,14 @@ typedef struct {
     VkDevice logicalDevice;
     VkQueue graphicsQueue;
     VkQueue presentQueue;
-    VkSwapchainKHR swapChain;
 
     QueueFamilyIndices indices;
+
+    //Swap chain
+    VkSwapchainKHR swapChain;
+    DYNAMIC_ARRAY(VkImage) swapChainImages;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
 } VulkanCore;
 
 

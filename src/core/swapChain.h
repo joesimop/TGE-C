@@ -2,9 +2,10 @@
 
 #include <vulkan/vulkan.h>
 #include "glfw_init.h"
+#include "physicalDevice.h"
+
 #include "../include/structs/dynamicarray.h"
 #include "../include/utils/types.h"
-#include "physicalDevice.h"
 
 typedef struct {
     VkSurfaceCapabilitiesKHR capabilities;
