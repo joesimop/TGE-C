@@ -28,6 +28,7 @@ static const char* DEVICE_EXTENSIONS[] = {
 #endif
 
 // STRUCTS
+
 // Represents queue families for physical and logical devices
 typedef struct {
     opt_u32 graphicsFamily;
@@ -38,10 +39,18 @@ static bool __is_valid_queue_family(QueueFamilyIndices indices){
     return has_value(indices.graphicsFamily) && has_value(indices.presentFamily);
 }
 
+// Stores the details of the swap chain
+typedef struct {
+    VkSurfaceCapabilitiesKHR capabilities;
+    DYNAMIC_ARRAY(VkSurfaceFormatKHR) formats;
+    DYNAMIC_ARRAY(VkPresentModeKHR) presentModes;
+} SwapChainSupportDetails;
+
 ///The global debug messenger struct
 VkDebugUtilsMessengerEXT g_debugMessenger;
 
 typedef struct {
+
     GLFWwindow* window;
     VkInstance instance;
     VkSurfaceKHR surface;
@@ -50,13 +59,16 @@ typedef struct {
     VkQueue graphicsQueue;
     VkQueue presentQueue;
 
+    //Not necessary, but limits function calls
     QueueFamilyIndices indices;
+    SwapChainSupportDetails swapChainDetails;
 
     //Swap chain
     VkSwapchainKHR swapChain;
     DYNAMIC_ARRAY(VkImage) swapChainImages;
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
+
 } VulkanCore;
 
 

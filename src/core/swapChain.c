@@ -2,20 +2,21 @@
 
 
 void create_swap_chain(VulkanCore* core) {
-    SwapChainSupportDetails details = query_swap_chain_specs(core->physicalDevice, core->surface);
-
+   
     //Choose the best settings for the swap chain
-    VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(details.formats);
-    VkPresentModeKHR presentMode = choose_swap_present_mode(details.presentModes);
-    VkExtent2D extent = choose_swap_extent(&details.capabilities, core->window);
+    VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(core->swapChainDetails.formats);
+    VkPresentModeKHR presentMode = choose_swap_present_mode(core->swapChainDetails.presentModes);
+    VkExtent2D extent = choose_swap_extent(&core->swapChainDetails.capabilities, core->window);
 
     //Save the swap chain details for later
     core->swapChainImageFormat = surfaceFormat.format;
     core->swapChainExtent = extent;
 
-    u32 imageCount = details.capabilities.minImageCount + 1;
-    if (details.capabilities.maxImageCount > 0 && imageCount > details.capabilities.maxImageCount) {
-        imageCount = details.capabilities.maxImageCount;
+    //Set the number of images in the swap chain, if max is 0, its "unlimited"...
+    u32 imageCount = core->swapChainDetails.capabilities.minImageCount + 1;
+    u32 maxImageCount = core->swapChainDetails.capabilities.maxImageCount;
+    if (maxImageCount > 0 && imageCount > maxImageCount) {
+        imageCount = maxImageCount;
     }
 
     //Create the swap chain
@@ -29,19 +30,19 @@ void create_swap_chain(VulkanCore* core) {
         .imageArrayLayers = 1,
         .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,      //VK_IMAGE_USAGE_TRANSFER_DST_BIT for post-processing
         .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
-        .preTransform = details.capabilities.currentTransform,
+        .preTransform = core->swapChainDetails.capabilities.currentTransform,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
         .presentMode = presentMode,
         .clipped = VK_TRUE,
         .oldSwapchain = VK_NULL_HANDLE
     };
 
+    //If we have two different queue families, we use concurrent sharing mode
+    //This avoids us from having to do ownership transfers
     u32 graphicsFamily = core->indices.graphicsFamily.value;
     u32 presentFamily = core->indices.presentFamily.value;
     u32 indices[] = {graphicsFamily, presentFamily};
 
-    //If we have two different queue families, we use concurrent sharing mode
-    //This avoids us from having to do ownership transfers
     if (graphicsFamily != presentFamily) {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = 2;
@@ -57,7 +58,6 @@ void create_swap_chain(VulkanCore* core) {
     //Init array of image handles
     da_init(core->swapChainImages, imageCount);
     ASSERT(vkGetSwapchainImagesKHR(core->logicalDevice, core->swapChain, &imageCount, core->swapChainImages) == VK_SUCCESS, "Failed to get swap chain images");
-
 }
 
 SwapChainSupportDetails query_swap_chain_specs(VkPhysicalDevice device, VkSurfaceKHR surface) {

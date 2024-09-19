@@ -1,17 +1,7 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include "glfw_init.h"
+#include "global.h"
 #include "physicalDevice.h"
-
-#include "../include/structs/dynamicarray.h"
-#include "../include/utils/types.h"
-
-typedef struct {
-    VkSurfaceCapabilitiesKHR capabilities;
-    DYNAMIC_ARRAY(VkSurfaceFormatKHR) formats;
-    DYNAMIC_ARRAY(VkPresentModeKHR) presentModes;
-} SwapChainSupportDetails;
 
 
 

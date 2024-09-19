@@ -28,6 +28,9 @@ void create_logical_device(VulkanCore* core) {
     //Populate the graphics queue from the logical device
     vkGetDeviceQueue(core->logicalDevice, queueCreateInfo.queueFamilyIndex, 0, &core->graphicsQueue);
 
+    //Free data
+    da_free(deviceCreateInfo.ppEnabledExtensionNames);
+
 }
 
 void __populate_queue_info_for_logical_device(QueueFamilyIndices indices, VkDeviceQueueCreateInfo* queueCreateInfo) {
@@ -56,7 +59,7 @@ void __enable_device_specific_extensions(VkDeviceCreateInfo* deviceCreateInfo) {
 
     //Enable extensions and v. layers that are device specific
     DYNAMIC_ARRAY(const char*) deviceSpecificExtensions = NULL;
-    da_init(deviceSpecificExtensions, 1);
+    da_init(deviceSpecificExtensions, 2);
     *da_push(deviceSpecificExtensions) = VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME;
 
     //Iterate through the required device extensions and add them

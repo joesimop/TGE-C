@@ -52,7 +52,8 @@ bool __is_device_suitable(VkPhysicalDevice device, VulkanCore* core) {
         SwapChainSupportDetails details = query_swap_chain_specs(device, core->surface);
         swapChainSupported = da_size(details.formats) > 0 && da_size(details.presentModes) > 0;
 
-        destroy_swap_chain_details(&details);
+        //Set the swap chain details in core
+        core->swapChainDetails = details;
     }
 
     //Set them here, if they are invalid, ASSERT outside of this function will catch it
@@ -119,7 +120,7 @@ QueueFamilyIndices __find_queue_families(VkPhysicalDevice device, VkSurfaceKHR s
                 }
             }
         }
+        da_free(queueFamilies);
     }
-    
     return families;
 }
