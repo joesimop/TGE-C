@@ -23,6 +23,9 @@ VkPresentModeKHR choose_swap_present_mode(VkPresentModeKHR* availablePresentMode
 //Important for matching resolution of the window surface to vulkans pixels
 VkExtent2D choose_swap_extent(const VkSurfaceCapabilitiesKHR* capabilities, GLFWwindow* window);
 
-//Destroys the swap chain
+//Destroys the swap chain details
 void destroy_swap_chain_details(SwapChainSupportDetails* details);
+
+//Destroys all things associated with the swap chain
+void destroy_swap_chain(VulkanCore* core);
 

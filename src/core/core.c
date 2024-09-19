@@ -9,6 +9,7 @@ VulkanCore initCore() {
     pick_physical_device(&core);
     create_logical_device(&core);
     create_swap_chain(&core);
+    create_image_views(&core);
     return core;
 }
 
@@ -26,12 +27,11 @@ void destroy(VulkanCore* core) {
         destroy_debug_messenger(core->instance);
     }
 
-    vkDestroySwapchainKHR(core->logicalDevice, core->swapChain, NULL);
+    destroy_image_views(core);
+    destroy_swap_chain(core);
     destroy_logical_device(core->logicalDevice);
     vkDestroySurfaceKHR(core->instance, core->surface, NULL);
     vkDestroyInstance(core->instance, NULL);
     glfwDestroyWindow(core->window);
-    destroy_swap_chain_details(&core->swapChainDetails);
-    da_free(core->swapChainImages);
     glfwTerminate();
 }

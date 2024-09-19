@@ -58,6 +58,7 @@ void create_swap_chain(VulkanCore* core) {
     //Init array of image handles
     da_init(core->swapChainImages, imageCount);
     ASSERT(vkGetSwapchainImagesKHR(core->logicalDevice, core->swapChain, &imageCount, core->swapChainImages) == VK_SUCCESS, "Failed to get swap chain images");
+    da_set_size(core->swapChainImages, imageCount);
 }
 
 SwapChainSupportDetails query_swap_chain_specs(VkPhysicalDevice device, VkSurfaceKHR surface) {
@@ -126,4 +127,10 @@ VkExtent2D choose_swap_extent(const VkSurfaceCapabilitiesKHR* capabilities, GLFW
 void destroy_swap_chain_details(SwapChainSupportDetails* details) {
     da_free(details->formats);
     da_free(details->presentModes);
+}
+
+void destroy_swap_chain(VulkanCore* core) {
+    vkDestroySwapchainKHR(core->logicalDevice, core->swapChain, NULL);
+    destroy_swap_chain_details(&core->swapChainDetails);
+    da_free(core->swapChainImages);
 }

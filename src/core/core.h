@@ -8,6 +8,7 @@
 #include "physicalDevice.h"
 #include "logicalDevice.h"
 #include "swapChain.h"
+#include "imageView.h"
 
 
 ///Initializes the engine
