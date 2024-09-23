@@ -71,20 +71,3 @@ typedef struct {
     VkExtent2D swapChainExtent;
 
 } VulkanCore;
-
-
-
-// MACROS
-
-//Assert
-#define ASSERT(condition, ...)                                                                                 \
-    do {                                                                                                       \
-        if (!(condition)) {                                                                                    \
-            fprintf(stderr, "\n**********************************************************\n");                 \
-            fprintf(stderr, "Assertion failed: %s\n", #condition);                                             \
-            fprintf(stderr, "Error: %s\n", is_empty(__VA_ARGS__) ? "No message" : #__VA_ARGS__);               \
-            fprintf(stderr, "File: %s, Line: %d\n", __FILE__, __LINE__);                                       \
-            fprintf(stderr, "**********************************************************\n");                   \
-            exit(EXIT_FAILURE);                                                                                \
-        }                                                                                                      \
-    } while (0)
