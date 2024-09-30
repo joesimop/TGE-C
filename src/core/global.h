@@ -65,9 +65,15 @@ typedef struct {
 
     //Swap chain
     VkSwapchainKHR swapChain;
-    DYNAMIC_ARRAY(VkImage) swapChainImages;
-    DYNAMIC_ARRAY(VkImageView) swapChainImageViews;
+    u32 swapChainImageCount;
+    VkImage* swapChainImages;
+    VkImageView* swapChainImageViews;
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
+
+    //Graphics pipeline
+    VkPipelineShaderStageCreateInfo* shaderStageInfo;
+    VkPipelineLayout pipelineLayout;
+    VkRenderPass renderPass;
 
 } VulkanCore;

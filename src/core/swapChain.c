@@ -53,12 +53,11 @@ void create_swap_chain(VulkanCore* core) {
         createInfo.pQueueFamilyIndices = NULL;
     }
 
+    core->swapChainImages = malloc(sizeof(VkImage) * imageCount);
     ASSERT(vkCreateSwapchainKHR(core->logicalDevice, &createInfo, NULL, &core->swapChain) == VK_SUCCESS, "Failed to create swap chain");
-
-    //Init array of image handles
-    da_init(core->swapChainImages, imageCount);
     ASSERT(vkGetSwapchainImagesKHR(core->logicalDevice, core->swapChain, &imageCount, core->swapChainImages) == VK_SUCCESS, "Failed to get swap chain images");
-    da_set_size(core->swapChainImages, imageCount);
+
+    core->swapChainImageCount = imageCount;
 }
 
 SwapChainSupportDetails query_swap_chain_specs(VkPhysicalDevice device, VkSurfaceKHR surface) {
@@ -132,5 +131,5 @@ void destroy_swap_chain_details(SwapChainSupportDetails* details) {
 void destroy_swap_chain(VulkanCore* core) {
     vkDestroySwapchainKHR(core->logicalDevice, core->swapChain, NULL);
     destroy_swap_chain_details(&core->swapChainDetails);
-    da_free(core->swapChainImages);
+    free(core->swapChainImages);
 }

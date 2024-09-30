@@ -9,6 +9,8 @@
 #include "logicalDevice.h"
 #include "swapChain.h"
 #include "imageView.h"
+#include "graphicsPipeline.h"
+#include "renderPass.h"
 
 
 ///Initializes the engine

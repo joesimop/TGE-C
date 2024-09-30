@@ -2,15 +2,19 @@
 
 void create_image_views(VulkanCore* core) {
 
-    u32 imageCount = da_size(core->swapChainImages);
-    da_init(core->swapChainImageViews, imageCount);
+    u32 imageCount = core->swapChainImageCount;
+
+    core->swapChainImageViews = malloc(sizeof(VkImageView) * imageCount);
     
     for (int i = 0; i < imageCount; i++) {
-        VkImageViewCreateInfo createInfo = {0};
+        VkImageViewCreateInfo createInfo;
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         createInfo.image = core->swapChainImages[i];
         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         createInfo.format = core->swapChainImageFormat;
+        createInfo.flags = 0;
+        createInfo.pNext = NULL;
+
 
         //Can set channels to constant value or map all to red for monochrome
         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -25,15 +29,18 @@ void create_image_views(VulkanCore* core) {
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        ASSERT(vkCreateImageView(core->logicalDevice, &createInfo, NULL, &core->swapChainImageViews[i]) == VK_SUCCESS, "Failed to create image views!");
+        //Print location of swapchainImageView
+        printf("Creating image view at %p\n", &(core->swapChainImageViews[i]));
+
+        ASSERT(vkCreateImageView(core->logicalDevice, &createInfo, NULL, &(core->swapChainImageViews[i])) == VK_SUCCESS, "Failed to create image views!");
     }
-    da_set_size(core->swapChainImageViews, imageCount);
+
 }
 
 void destroy_image_views(VulkanCore* core) {
-    for (int i = 0; i < da_size(core->swapChainImageViews); i++) {
+    for (int i = 0; i < core->swapChainImageCount; i++) {
         vkDestroyImageView(core->logicalDevice, core->swapChainImageViews[i], NULL);
     }
-    da_free(core->swapChainImageViews);
+    free(core->swapChainImageViews);
 }
 
