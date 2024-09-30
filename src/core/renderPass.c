@@ -20,6 +20,8 @@ void create_render_pass(VulkanCore* core){
 
     //Subpasses
     VkSubpassDescription subpass = create_render_sub_pass();
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
 
@@ -57,15 +59,9 @@ VkAttachmentDescription create_render_attachment(VulkanCore* core){
 
 VkSubpassDescription create_render_sub_pass(){
 
-        VkAttachmentReference colorAttachmentRef;
-        colorAttachmentRef.attachment = 0;          //Index of the attachment in the attachment array
-        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
         VkSubpassDescription subpass;
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.flags = 0;
-        subpass.colorAttachmentCount = 1;
-        subpass.pColorAttachments = &colorAttachmentRef;
 
 
         //Subpass necessities

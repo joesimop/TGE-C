@@ -29,9 +29,6 @@ void create_image_views(VulkanCore* core) {
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        //Print location of swapchainImageView
-        printf("Creating image view at %p\n", &(core->swapChainImageViews[i]));
-
         ASSERT(vkCreateImageView(core->logicalDevice, &createInfo, NULL, &(core->swapChainImageViews[i])) == VK_SUCCESS, "Failed to create image views!");
     }
 

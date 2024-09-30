@@ -11,7 +11,7 @@ VulkanCore initCore() {
     create_swap_chain(&core);
     create_image_views(&core);
     create_render_pass(&core);
-   //create_graphics_pipeline(&core);
+    create_graphics_pipeline(&core);
     return core;
 }
 
