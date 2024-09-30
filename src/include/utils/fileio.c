@@ -6,20 +6,24 @@
 #define  FILEREAD_TOOMUCH    -3  /* Too much input */
 #define  FILEREAD_NOMEM      -4  /* Out of memory */
 
-void read_shader(const char * filename, char **shaderSource, size_t *shaderSize) {
+#define  MAX_SHADER_PATH_LEN 100
 
-    char* path;
-    strcpy(path, SHADER_DIR);
+void read_shader(const char* filename, char **shaderSource, size_t *shaderSize) {
+
+    //Construct filename, make sure it is not too long
+    ASSERT(strlen(filename) <= MAX_SHADER_PATH_LEN, "Filename too long: %s", filename);
+    char path[MAX_SHADER_PATH_LEN + ARRAY_SIZE(SHADER_DIR)] = SHADER_DIR;
     strcat(path, filename);
-    fprintf(stderr, "Path: %s\n", path);
+
     FILE *shaderFile = fopen(path, "r");
 
-    ASSERT(shaderFile != NULL, "Failed to open file: %s", path);
+    ASSERT(shaderFile != NULL, "Failed to open shader: %s", path);
     ASSERT(read_all(shaderFile, shaderSource, shaderSize, 0) == FILEREAD_OK, "Failed to read file: %s", filename);
 }
 
 int read_all(FILE *f, char** buf, size_t* size_ptr, size_t chunk_size) {
    
+    fprintf(stderr, "STARTING FILE READ\n");
     char  *data = NULL, *temp;
     size_t size = 0;
     size_t used = 0;
@@ -27,12 +31,22 @@ int read_all(FILE *f, char** buf, size_t* size_ptr, size_t chunk_size) {
 
     chunk_size = chunk_size ? chunk_size : PAGE_SIZE;
 
-    /* None of the parameters can be NULL. */
-    if (f == NULL || buf == NULL || size_ptr == NULL)
-        return FILEREAD_INVALID;
+    /* 
+        None of the parameters can be NULL. 
+        Explicit for error pinpointing
+    */
+    assert(f != NULL);
+    assert(buf != NULL);
+    assert(size_ptr != NULL);
 
     if (ferror(f)) { return FILEREAD_INVALID; }
 
+    //Inital read parameters
+    size += chunk_size;
+    data = malloc(sizeof(char*) * size);
+    if (data == NULL) { return FILEREAD_NOMEM; }
+
+    fprintf(stderr, "STARTING LOOP\n");
     while (1) {
 
         //Check if we are a chunck size away from filling our buffer
@@ -59,7 +73,6 @@ int read_all(FILE *f, char** buf, size_t* size_ptr, size_t chunk_size) {
         free(data);
         return FILEREAD_ERROR;
     }
-
     //Optimize the buffer size
     temp = realloc(data, used);
     if(temp == NULL){
@@ -70,6 +83,9 @@ int read_all(FILE *f, char** buf, size_t* size_ptr, size_t chunk_size) {
     data = temp;
     *buf = data;
     *size_ptr = used;
+
+    fprintf(stderr, "File Read Info:\n");
+    fprintf(stderr, "Size: %ld\n", used);
 
     return FILEREAD_OK;
 }

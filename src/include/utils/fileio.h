@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <assert.h>
 #include "helpers.h"
+
+//#define SHADER_DIR "shaders/"
 
 #ifndef PAGE_SIZE
 #define PAGE_SIZE sysconf(_SC_PAGE_SIZE);
