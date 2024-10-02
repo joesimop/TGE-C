@@ -29,6 +29,8 @@ void destroy(VulkanCore* core) {
         destroy_debug_messenger(core->instance);
     }
 
+    free(core->shaderStageInfo);
+    vkDestroyPipeline(core->logicalDevice, core->pipeline, NULL);
     vkDestroyPipelineLayout(core->logicalDevice, core->pipelineLayout, NULL);
     vkDestroyRenderPass(core->logicalDevice, core->renderPass, NULL);
     destroy_image_views(core);

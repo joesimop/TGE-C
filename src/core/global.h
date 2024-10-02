@@ -75,5 +75,6 @@ typedef struct {
     VkPipelineShaderStageCreateInfo* shaderStageInfo;
     VkPipelineLayout pipelineLayout;
     VkRenderPass renderPass;
+    VkPipeline pipeline;
 
 } VulkanCore;
