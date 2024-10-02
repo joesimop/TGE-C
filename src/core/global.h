@@ -77,4 +77,7 @@ typedef struct {
     VkRenderPass renderPass;
     VkPipeline pipeline;
 
+    //FrameBuffers
+    DYNAMIC_ARRAY(VkFramebuffer) swapChainFramebuffers;
+
 } VulkanCore;

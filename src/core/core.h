@@ -11,6 +11,7 @@
 #include "imageView.h"
 #include "graphicsPipeline.h"
 #include "renderPass.h"
+#include "frameBuffer.h"
 
 
 ///Initializes the engine

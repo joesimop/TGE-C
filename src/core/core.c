@@ -12,6 +12,7 @@ VulkanCore initCore() {
     create_image_views(&core);
     create_render_pass(&core);
     create_graphics_pipeline(&core);
+    create_frame_buffers(&core);
     return core;
 }
 
@@ -29,6 +30,7 @@ void destroy(VulkanCore* core) {
         destroy_debug_messenger(core->instance);
     }
 
+    destroy_frame_buffers(core);
     free(core->shaderStageInfo);
     vkDestroyPipeline(core->logicalDevice, core->pipeline, NULL);
     vkDestroyPipelineLayout(core->logicalDevice, core->pipelineLayout, NULL);
