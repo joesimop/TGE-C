@@ -20,12 +20,14 @@ static const char* VALIDATION_LAYERS[] = {
 static const char* DEVICE_EXTENSIONS[] = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
-    
+
 #ifdef DEBUG
     static const bool ENABLE_VALIDATION_LAYERS = true;
 #else
     static const bool ENABLE_VALIDATION_LAYERS = false;
 #endif
+
+#define MAX_FRAMES_IN_FLIGHT 2
 
 // STRUCTS
 
@@ -80,4 +82,22 @@ typedef struct {
     //FrameBuffers
     DYNAMIC_ARRAY(VkFramebuffer) swapChainFramebuffers;
 
+
 } VulkanCore;
+
+typedef struct {
+    
+    VulkanCore* core;                                          //Reference to the core its displaying
+
+    //Command Buffer References
+    VkCommandPool commandPool;
+    VkCommandBuffer commandBuffers[MAX_FRAMES_IN_FLIGHT];       //Command buffers for rendering
+
+    u32 currentFrame;                                          //Index of the current frame being rendered
+    u32 scImageIndex;                                          //Index of current swap chain image being rendered to
+    VkSemaphore cb_waitSemaphores[MAX_FRAMES_IN_FLIGHT];       //Defines the semaphores to wait on during command buffer execution
+    VkPipelineStageFlags waitStages[1];                        //Defines the stages to wait on during command buffer execution
+    VkSemaphore signalSemaphores[MAX_FRAMES_IN_FLIGHT];        //Semaphores to signal after command buffer execution
+    VkFence inFlightFences[MAX_FRAMES_IN_FLIGHT];              //Fences to signal after command buffer execution
+
+} RenderState;

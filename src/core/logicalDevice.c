@@ -27,6 +27,7 @@ void create_logical_device(VulkanCore* core) {
 
     //Populate the graphics queue from the logical device
     vkGetDeviceQueue(core->logicalDevice, queueCreateInfo.queueFamilyIndex, 0, &core->graphicsQueue);
+    vkGetDeviceQueue(core->logicalDevice, core->indices.presentFamily.value, 0, &core->presentQueue);
 
     //Free data
     da_free(deviceCreateInfo.ppEnabledExtensionNames);

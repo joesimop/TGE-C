@@ -12,10 +12,15 @@
 #include "graphicsPipeline.h"
 #include "renderPass.h"
 #include "frameBuffer.h"
+#include "commandPool.h"
+#include "syncObjects.h"
 
 
 ///Initializes the engine
 /// @return The intilized core to run the game
 VulkanCore initCore();
-void destroy(VulkanCore* engine);
-void run(VulkanCore* engine);
+RenderState initRenderState(VulkanCore* core);
+void destroy(VulkanCore* core, RenderState* renderState);
+void run(VulkanCore* core, RenderState* renderState);
+void draw_frame(RenderState* renderState);
+void construct_render_state(VulkanCore* core, RenderState* renderState);

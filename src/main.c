@@ -3,9 +3,10 @@
 
 int main() {
 
-    VulkanCore engine = initCore();
-    run(&engine);
-    destroy(&engine);
+    VulkanCore core = initCore();
+    RenderState renderState = initRenderState(&core);
+    run(&core, &renderState);
+    destroy(&core, &renderState);
 
     return 0;
 }
