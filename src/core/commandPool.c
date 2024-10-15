@@ -43,7 +43,7 @@ void record_command_buffer(RenderState* renderState) {
     renderPassInfo.renderArea.offset = (VkOffset2D) {0, 0};
     renderPassInfo.renderArea.extent = renderState->core->swapChainExtent;
 
-    VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+    const VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
 
