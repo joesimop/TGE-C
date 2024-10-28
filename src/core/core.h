@@ -18,8 +18,8 @@
 
 ///Initializes the engine
 /// @return The intilized core to run the game
-VulkanCore initCore();
-RenderState initRenderState(VulkanCore* core);
+void init_core(VulkanCore* core, RenderState* renderState);
+void init_render_state(VulkanCore* core, RenderState* renderState);
 void destroy(VulkanCore* core, RenderState* renderState);
 void run(VulkanCore* core, RenderState* renderState);
 void draw_frame(RenderState* renderState);

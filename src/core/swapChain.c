@@ -1,5 +1,8 @@
 #include "swapChain.h"
 
+#include "frameBuffer.h"
+#include "imageView.h"
+
 
 void create_swap_chain(VulkanCore* core) {
    
@@ -54,7 +57,8 @@ void create_swap_chain(VulkanCore* core) {
     }
 
     core->swapChainImages = malloc(sizeof(VkImage) * imageCount);
-    ASSERT(vkCreateSwapchainKHR(core->logicalDevice, &createInfo, NULL, &core->swapChain) == VK_SUCCESS, "Failed to create swap chain");
+    ASSERT(vkCreateSwapchainKHR(core->logicalDevice, &createInfo, NULL, &core->swapChain) == VK_SUCCESS,
+           "Failed to create swap chain");
     ASSERT(vkGetSwapchainImagesKHR(core->logicalDevice, core->swapChain, &imageCount, core->swapChainImages) == VK_SUCCESS, "Failed to get swap chain images");
 
     core->swapChainImageCount = imageCount;
@@ -123,6 +127,36 @@ VkExtent2D choose_swap_extent(const VkSurfaceCapabilitiesKHR* capabilities, GLFW
     return actualExtent;
 }
 
+void cleanup_swap_chain(VulkanCore* core) {
+
+    //Basic swap chain cleanup
+    destroy_frame_buffers(core);
+    destroy_image_views(core);
+    destroy_swap_chain(core);
+
+}
+
+//TODO: Sometimes will need to recreate renderpass to conform to new swapchain
+void recreate_swap_chain(VulkanCore* core) {
+
+    printf("Recreating swapchain... \n");
+    //For window minimization
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(core->window, &width, &height);
+    if (width == 0 || height == 0) {
+        glfwGetFramebufferSize(core->window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    //Wait for swapchain to not be in use
+    vkDeviceWaitIdle(core->logicalDevice);
+    cleanup_swap_chain(core);
+
+    create_swap_chain(core);
+    create_image_views(core);
+    create_frame_buffers(core);
+}
+
 void destroy_swap_chain_details(SwapChainSupportDetails* details) {
     da_free(details->formats);
     da_free(details->presentModes);
@@ -130,6 +164,5 @@ void destroy_swap_chain_details(SwapChainSupportDetails* details) {
 
 void destroy_swap_chain(VulkanCore* core) {
     vkDestroySwapchainKHR(core->logicalDevice, core->swapChain, NULL);
-    destroy_swap_chain_details(&core->swapChainDetails);
     free(core->swapChainImages);
 }

@@ -3,8 +3,10 @@
 
 int main() {
 
-    VulkanCore core = initCore();
-    RenderState renderState = initRenderState(&core);
+    VulkanCore core; RenderState renderState;
+
+    init_core(&core, &renderState);
+    init_render_state(&core, &renderState);
     run(&core, &renderState);
     destroy(&core, &renderState);
 

@@ -24,7 +24,7 @@ void create_graphics_pipeline(VulkanCore* core) {
     VkPipelineShaderStageCreateInfo fragShaderStageInfo;
     create_fragment_shader_stage_info(fragShaderModule, &fragShaderStageInfo);
 
-    VkPipelineShaderStageCreateInfo* stages = (VkPipelineShaderStageCreateInfo*) malloc(sizeof(VkPipelineShaderStageCreateInfo) * 2);
+    VkPipelineShaderStageCreateInfo* stages = malloc(sizeof(VkPipelineShaderStageCreateInfo) * 2);
     stages[0] = vertShaderStageInfo;
     stages[1] = fragShaderStageInfo;
 

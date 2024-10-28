@@ -100,4 +100,5 @@ typedef struct {
     VkSemaphore signalSemaphores[MAX_FRAMES_IN_FLIGHT];        //Semaphores to signal after command buffer execution
     VkFence inFlightFences[MAX_FRAMES_IN_FLIGHT];              //Fences to signal after command buffer execution
 
+    bool frameBufferResized;
 } RenderState;

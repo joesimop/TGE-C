@@ -1,29 +1,24 @@
 #include "core.h"
 
-VulkanCore initCore() {
-    VulkanCore core;
-    init_window(&core.window);
-    init_vulkan(&core.instance);
-    setup_debug_messenger(&core.instance);
-    create_surface(&core);
-    pick_physical_device(&core);
-    create_logical_device(&core);
-    create_swap_chain(&core);
-    create_image_views(&core);
-    create_render_pass(&core);
-    create_graphics_pipeline(&core);
-    create_frame_buffers(&core);
-    return core;
+void init_core(VulkanCore* core, RenderState* renderState) {
+    init_window(&core->window, renderState);
+    init_vulkan(&core->instance);
+    setup_debug_messenger(&core->instance);
+    create_surface(core);
+    pick_physical_device(core);
+    create_logical_device(core);
+    create_swap_chain(core);
+    create_image_views(core);
+    create_render_pass(core);
+    create_graphics_pipeline(core);
+    create_frame_buffers(core);
 }
 
-RenderState initRenderState(VulkanCore* core) {
-    RenderState renderState;
-    fprintf(stderr, "Value: %d\n", core->indices.graphicsFamily.value);
-    construct_render_state(core, &renderState);
-    create_command_pool(&renderState);
-    create_command_buffer(&renderState);
-    create_sync_objects(&renderState);
-    return renderState;
+void init_render_state(VulkanCore* core, RenderState* renderState) {
+    construct_render_state(core, renderState);
+    create_command_pool(renderState);
+    create_command_buffer(renderState);
+    create_sync_objects(renderState);
 }
 
 void run(VulkanCore* core, RenderState* renderState) {
@@ -39,6 +34,7 @@ void run(VulkanCore* core, RenderState* renderState) {
 void construct_render_state(VulkanCore* core, RenderState* renderState) {
     renderState->core = core;
     renderState->waitStages[0] = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    renderState->frameBufferResized = false;
 }
 
 void draw_frame(RenderState* renderState){
@@ -48,15 +44,24 @@ void draw_frame(RenderState* renderState){
     u32 currentFrame = renderState->currentFrame;
 
     vkWaitForFences(core->logicalDevice, 1, &renderState->inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+
+    VkResult result = vkAcquireNextImageKHR(core->logicalDevice,
+                            core->swapChain,
+                            UINT64_MAX,
+                            renderState->cb_waitSemaphores[currentFrame],
+                            VK_NULL_HANDLE,
+                            &renderState->scImageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        recreate_swap_chain(core);
+        return;
+    } else {
+        ASSERT(result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR, "Failed to aquire swapchain image");
+    }
+
+    //Only unsignal the fence if we know we are going to present
     vkResetFences(core->logicalDevice, 1, &renderState->inFlightFences[currentFrame]);
 
-    vkAcquireNextImageKHR(core->logicalDevice, 
-                            core->swapChain, 
-                            UINT64_MAX, 
-                            renderState->cb_waitSemaphores[currentFrame], 
-                            VK_NULL_HANDLE, 
-                            &renderState->scImageIndex);
-    
     vkResetCommandBuffer(renderState->commandBuffers[currentFrame], 0);
 
     record_command_buffer(renderState);
@@ -84,7 +89,15 @@ void draw_frame(RenderState* renderState){
     presentInfo.pImageIndices = &renderState->scImageIndex;
     presentInfo.pResults = NULL;
     presentInfo.pNext = NULL;
-    vkQueuePresentKHR(core->presentQueue, &presentInfo);
+
+    result = vkQueuePresentKHR(core->presentQueue, &presentInfo);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || renderState->frameBufferResized) {
+        renderState->frameBufferResized = false;
+        recreate_swap_chain(core);
+    } else {
+        ASSERT(result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR, "Failed to present swapchain image.");
+    }
 
     renderState->currentFrame = (renderState->currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -96,14 +109,15 @@ void destroy(VulkanCore* core, RenderState* renderState) {
     }
 
     destroy_sync_objects(renderState);
+
     vkDestroyCommandPool(core->logicalDevice, renderState->commandPool, NULL);
-    destroy_frame_buffers(core);
+
+    cleanup_swap_chain(core);
+    destroy_swap_chain_details(&core->swapChainDetails);
     free(core->shaderStageInfo);
     vkDestroyPipeline(core->logicalDevice, core->pipeline, NULL);
     vkDestroyPipelineLayout(core->logicalDevice, core->pipelineLayout, NULL);
     vkDestroyRenderPass(core->logicalDevice, core->renderPass, NULL);
-    destroy_image_views(core);
-    destroy_swap_chain(core);
     destroy_logical_device(core->logicalDevice);
     vkDestroySurfaceKHR(core->instance, core->surface, NULL);
     vkDestroyInstance(core->instance, NULL);

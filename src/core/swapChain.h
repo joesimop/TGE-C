@@ -29,3 +29,8 @@ void destroy_swap_chain_details(SwapChainSupportDetails* details);
 //Destroys all things associated with the swap chain
 void destroy_swap_chain(VulkanCore* core);
 
+void recreate_swap_chain(VulkanCore* core);
+
+void cleanup_swap_chain(VulkanCore* core);
+
+
