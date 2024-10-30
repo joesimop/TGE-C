@@ -92,11 +92,11 @@ void draw_frame(RenderState* renderState){
 
     result = vkQueuePresentKHR(core->presentQueue, &presentInfo);
 
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || renderState->frameBufferResized) {
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || renderState->frameBufferResized) {
         renderState->frameBufferResized = false;
         recreate_swap_chain(core);
     } else {
-        ASSERT(result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR, "Failed to present swapchain image.");
+        ASSERT(result == VK_SUCCESS, "Failed to present swapchain image.");
     }
 
     renderState->currentFrame = (renderState->currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;

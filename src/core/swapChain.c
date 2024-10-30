@@ -7,9 +7,9 @@
 void create_swap_chain(VulkanCore* core) {
    
     //Choose the best settings for the swap chain
-    VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(core->swapChainDetails.formats);
-    VkPresentModeKHR presentMode = choose_swap_present_mode(core->swapChainDetails.presentModes);
-    VkExtent2D extent = choose_swap_extent(&core->swapChainDetails.capabilities, core->window);
+    const VkSurfaceFormatKHR surfaceFormat = choose_swap_surface_format(core->swapChainDetails.formats);
+    const VkPresentModeKHR presentMode = choose_swap_present_mode(core->swapChainDetails.presentModes);
+    const VkExtent2D extent = choose_swap_extent(&core->swapChainDetails.capabilities, core->window);
 
     //Save the swap chain details for later
     core->swapChainImageFormat = surfaceFormat.format;
@@ -17,7 +17,7 @@ void create_swap_chain(VulkanCore* core) {
 
     //Set the number of images in the swap chain, if max is 0, its "unlimited"...
     u32 imageCount = core->swapChainDetails.capabilities.minImageCount + 1;
-    u32 maxImageCount = core->swapChainDetails.capabilities.maxImageCount;
+    const u32 maxImageCount = core->swapChainDetails.capabilities.maxImageCount;
     if (maxImageCount > 0 && imageCount > maxImageCount) {
         imageCount = maxImageCount;
     }
@@ -42,9 +42,9 @@ void create_swap_chain(VulkanCore* core) {
 
     //If we have two different queue families, we use concurrent sharing mode
     //This avoids us from having to do ownership transfers
-    u32 graphicsFamily = core->indices.graphicsFamily.value;
-    u32 presentFamily = core->indices.presentFamily.value;
-    u32 indices[] = {graphicsFamily, presentFamily};
+    const u32 graphicsFamily = core->indices.graphicsFamily.value;
+    const u32 presentFamily = core->indices.presentFamily.value;
+    const u32 indices[] = {graphicsFamily, presentFamily};
 
     if (graphicsFamily != presentFamily) {
         createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -109,9 +109,11 @@ VkPresentModeKHR choose_swap_present_mode(VkPresentModeKHR* availablePresentMode
 }
 
 VkExtent2D choose_swap_extent(const VkSurfaceCapabilitiesKHR* capabilities, GLFWwindow* window) {
-    if (capabilities->currentExtent.width != UINT32_MAX){
-        return capabilities->currentExtent;
-    }
+
+    //NOTE: This is for special behavior when passing UINT_32 that I don't quite understand
+    // if (capabilities->currentExtent.width != UINT32_MAX){
+    //     return capabilities->currentExtent;
+    // }
 
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -140,6 +142,7 @@ void cleanup_swap_chain(VulkanCore* core) {
 void recreate_swap_chain(VulkanCore* core) {
 
     printf("Recreating swapchain... \n");
+
     //For window minimization
     int width = 0, height = 0;
     glfwGetFramebufferSize(core->window, &width, &height);
