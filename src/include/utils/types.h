@@ -3,7 +3,6 @@
 
 // fixed width numeric types
 #include <stdint.h>
-#include <inttypes.h>
 #include "optional.h"
 
 typedef uint8_t u8;

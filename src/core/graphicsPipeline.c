@@ -36,6 +36,16 @@ void create_graphics_pipeline(VulkanCore* core) {
     VkPipelineVertexInputStateCreateInfo vertexInputInfo;
     create_vertex_input_stage(&vertexInputInfo);
 
+    VkVertexInputBindingDescription bindingDescription = VERTEX_BINDING_DESC(0);
+
+    VkVertexInputAttributeDescription attribute1 = VERTEX_ATTRIBUTE_DESC(0, 0, pos, ATTRIBUTE_FORMAT_VEC2);
+    VkVertexInputAttributeDescription attribute2 = VERTEX_ATTRIBUTE_DESC(0, 1, color, ATTRIBUTE_FORMAT_VEC3);
+
+    const VkVertexInputAttributeDescription attributeList[2] = {attribute1, attribute2};
+
+    vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeList;
+
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly;
     create_input_assembly_stage(&inputAssembly);
@@ -159,10 +169,10 @@ void create_dynamic_states(VkPipelineDynamicStateCreateInfo* dynamicStateInfo) {
 void create_vertex_input_stage(VkPipelineVertexInputStateCreateInfo* vertexInputInfo) {
 
     vertexInputInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo->vertexBindingDescriptionCount = 0;
-    vertexInputInfo->pVertexBindingDescriptions = NULL;
-    vertexInputInfo->vertexAttributeDescriptionCount = 0;
-    vertexInputInfo->pVertexAttributeDescriptions = NULL;
+    vertexInputInfo->vertexBindingDescriptionCount = 1;
+    //vertexInputInfo->pVertexBindingDescriptions = &bindingDescription;
+    vertexInputInfo->vertexAttributeDescriptionCount = 2;
+    //vertexInputInfo->pVertexAttributeDescriptions = &attributeList;
     vertexInputInfo->pNext = NULL;
     vertexInputInfo->flags = 0;
 }

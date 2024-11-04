@@ -1,5 +1,9 @@
 #include "core.h"
 
+VkBuffer only_buffer;
+size_t only_buffer_size = sizeof(ShaderVertex) * ARRAY_SIZE(vertices);
+VkDeviceMemory only_buffer_memory;
+
 void init_core(VulkanCore* core, RenderState* renderState) {
     init_window(&core->window, renderState);
     init_vulkan(&core->instance);
@@ -16,6 +20,10 @@ void init_core(VulkanCore* core, RenderState* renderState) {
 
 void init_render_state(VulkanCore* core, RenderState* renderState) {
     construct_render_state(core, renderState);
+    create_vertex_buffer(core, only_buffer_size, &only_buffer);
+    allocate_buffer(core, only_buffer, &only_buffer_memory, 0);
+    fill_buffer(core, &only_buffer_memory, only_buffer_size,vertices, 0);
+    renderState->buffer = &only_buffer;
     create_command_pool(renderState);
     create_command_buffer(renderState);
     create_sync_objects(renderState);
@@ -37,36 +45,33 @@ void construct_render_state(VulkanCore* core, RenderState* renderState) {
     renderState->frameBufferResized = false;
 }
 
-void draw_frame(RenderState* renderState){
+void draw_frame(RenderState* renderState) {
 
-    //Readability variables
+    // Readability variables
     VulkanCore* core = renderState->core;
     u32 currentFrame = renderState->currentFrame;
 
     vkWaitForFences(core->logicalDevice, 1, &renderState->inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-    VkResult result = vkAcquireNextImageKHR(core->logicalDevice,
-                            core->swapChain,
-                            UINT64_MAX,
-                            renderState->cb_waitSemaphores[currentFrame],
-                            VK_NULL_HANDLE,
-                            &renderState->scImageIndex);
+    VkResult result = vkAcquireNextImageKHR(
+            core->logicalDevice, core->swapChain, UINT64_MAX, renderState->cb_waitSemaphores[currentFrame],
+            VK_NULL_HANDLE, &renderState->scImageIndex
+    );
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         recreate_swap_chain(core);
         return;
-    } else {
-        ASSERT(result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR, "Failed to aquire swapchain image");
     }
+    ASSERT(result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR, "Failed to aquire swapchain image");
 
-    //Only unsignal the fence if we know we are going to present
+    // Only unsignal the fence if we know we are going to present
     vkResetFences(core->logicalDevice, 1, &renderState->inFlightFences[currentFrame]);
 
     vkResetCommandBuffer(renderState->commandBuffers[currentFrame], 0);
 
     record_command_buffer(renderState);
 
-    VkSubmitInfo submitInfo;    
+    VkSubmitInfo submitInfo;
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.pNext = NULL;
@@ -108,6 +113,8 @@ void destroy(VulkanCore* core, RenderState* renderState) {
         destroy_debug_messenger(core->instance);
     }
 
+    destroy_buffer(core, &only_buffer);
+    vkFreeMemory(core->logicalDevice, only_buffer_memory, NULL);
     destroy_sync_objects(renderState);
 
     vkDestroyCommandPool(core->logicalDevice, renderState->commandPool, NULL);

@@ -2,7 +2,7 @@
 
 void create_image_views(VulkanCore* core) {
 
-    u32 imageCount = core->swapChainImageCount;
+    const u32 imageCount = core->swapChainImageCount;
 
     core->swapChainImageViews = malloc(sizeof(VkImageView) * imageCount);
     
@@ -14,7 +14,6 @@ void create_image_views(VulkanCore* core) {
         createInfo.format = core->swapChainImageFormat;
         createInfo.flags = 0;
         createInfo.pNext = NULL;
-
 
         //Can set channels to constant value or map all to red for monochrome
         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;

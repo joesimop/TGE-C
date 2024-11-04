@@ -1,6 +1,7 @@
 #pragma once
 
 #include "global.h"
+#include "vertex.h"
 #include "../include/utils/fileio.h"
 
 #define VIEWPORT_DYNAMIC 0
