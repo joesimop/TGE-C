@@ -22,7 +22,7 @@ void init_render_state(VulkanCore* core, RenderState* renderState) {
     construct_render_state(core, renderState);
     create_vertex_buffer(core, only_buffer_size, &only_buffer);
     allocate_buffer(core, only_buffer, &only_buffer_memory, 0);
-    fill_buffer(core, &only_buffer_memory, only_buffer_size,vertices, 0);
+    fill_buffer(core, &only_buffer_memory, only_buffer_size, vertices, 0);
     renderState->buffer = &only_buffer;
     create_command_pool(renderState);
     create_command_buffer(renderState);

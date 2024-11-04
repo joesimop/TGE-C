@@ -18,17 +18,22 @@ void create_sync_objects(RenderState* renderState) {
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     for (int i = 0; i < FRAMES_IN_FLIGHT; i++) {
-        ASSERT(vkCreateSemaphore(renderState->core->logicalDevice, &semaphoreInfo, NULL, &renderState->cb_waitSemaphores[i]) == VK_SUCCESS &&
-               vkCreateSemaphore(renderState->core->logicalDevice, &semaphoreInfo, NULL, &renderState->signalSemaphores[i]) == VK_SUCCESS &&
-               vkCreateFence(renderState->core->logicalDevice, &fenceInfo, NULL, &renderState->inFlightFences[i]) == VK_SUCCESS, "Failed to create sync objects");
+        ASSERT(vkCreateSemaphore(
+                       renderState->core->logicalDevice, &semaphoreInfo, NULL, &renderState->cb_waitSemaphores[i]
+               ) == VK_SUCCESS &&
+                       vkCreateSemaphore(
+                               renderState->core->logicalDevice, &semaphoreInfo, NULL, &renderState->signalSemaphores[i]
+                       ) == VK_SUCCESS &&
+                       vkCreateFence(
+                               renderState->core->logicalDevice, &fenceInfo, NULL, &renderState->inFlightFences[i]
+                       ) == VK_SUCCESS,
+               "Failed to create sync objects");
     }
-
-
 }
 
 
 void destroy_sync_objects(RenderState* renderState) {
-    for (int i = 0; i < FRAMES_IN_FLIGHT; i++){
+    for (int i = 0; i < FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(renderState->core->logicalDevice, renderState->cb_waitSemaphores[i], NULL);
         vkDestroySemaphore(renderState->core->logicalDevice, renderState->signalSemaphores[i], NULL);
         vkDestroyFence(renderState->core->logicalDevice, renderState->inFlightFences[i], NULL);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global.h"
 #include "../include/utils/helpers.h"
+#include "global.h"
 
 void create_surface(VulkanCore* core);

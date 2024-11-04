@@ -1,6 +1,6 @@
 #include "commandPool.h"
 
-void create_command_pool(RenderState *renderState) {
+void create_command_pool(RenderState* renderState) {
 
     VkCommandPoolCreateInfo poolInfo;
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -13,7 +13,7 @@ void create_command_pool(RenderState *renderState) {
            "Failed to create command pool");
 }
 
-void create_command_buffer(RenderState *renderState) {
+void create_command_buffer(RenderState* renderState) {
 
     VkCommandBufferAllocateInfo allocInfo;
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -27,10 +27,10 @@ void create_command_buffer(RenderState *renderState) {
            "Failed to allocate command buffer");
 }
 
-void record_command_buffer(RenderState *renderState) {
+void record_command_buffer(RenderState* renderState) {
 
     // Easy access to the current command buffer
-    VkCommandBuffer *currentCommandBuffer = &renderState->commandBuffers[renderState->currentFrame];
+    VkCommandBuffer* currentCommandBuffer = &renderState->commandBuffers[renderState->currentFrame];
 
     VkCommandBufferBeginInfo beginInfo;
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -70,7 +70,7 @@ void record_command_buffer(RenderState *renderState) {
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(*currentCommandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdDraw(*currentCommandBuffer, 3,1,0,0);
+    vkCmdDraw(*currentCommandBuffer, 3, 1, 0, 0);
     // vkCmdDraw(*currentCommandBuffer, 3, 1, 0, 0);
 
     vkCmdEndRenderPass(*currentCommandBuffer);

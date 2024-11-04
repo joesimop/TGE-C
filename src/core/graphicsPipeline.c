@@ -3,7 +3,7 @@
 
 void create_graphics_pipeline(VulkanCore* core) {
 
-    //Create shader instances
+    // Create shader instances
     char* vertShaderCode;
     size_t vertShaderSize;
     read_shader("vert.spv", &vertShaderCode, &vertShaderSize);
@@ -30,7 +30,7 @@ void create_graphics_pipeline(VulkanCore* core) {
 
     core->shaderStageInfo = stages;
 
-    //Create the pipeline layout
+    // Create the pipeline layout
     create_pipeline_layout(core);
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo;
@@ -50,7 +50,7 @@ void create_graphics_pipeline(VulkanCore* core) {
     VkPipelineInputAssemblyStateCreateInfo inputAssembly;
     create_input_assembly_stage(&inputAssembly);
 
-    //Viewport State using viewport and scissor
+    // Viewport State using viewport and scissor
     VkViewport viewport;
     create_viewport(core, &viewport);
 
@@ -68,7 +68,7 @@ void create_graphics_pipeline(VulkanCore* core) {
     VkPipelineMultisampleStateCreateInfo multisampling;
     create_multisampling_stage(&multisampling);
 
-    //Create Color blend attachment
+    // Create Color blend attachment
     VkPipelineColorBlendAttachmentState colorBlendAttachment;
     create_color_blend_stage(&colorBlendAttachment);
 
@@ -80,7 +80,7 @@ void create_graphics_pipeline(VulkanCore* core) {
     create_dynamic_states(&dynamicState);
     dynamicState.dynamicStateCount = ARRAY_SIZE(dynamicStates);
     dynamicState.pDynamicStates = dynamicStates;
-    
+
     VkGraphicsPipelineCreateInfo pipelineInfo;
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     pipelineInfo.stageCount = 2;
@@ -99,20 +99,22 @@ void create_graphics_pipeline(VulkanCore* core) {
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     pipelineInfo.basePipelineIndex = -1;
 
-    //Necessities
+    // Necessities
     pipelineInfo.pNext = NULL;
     pipelineInfo.flags = 0;
     pipelineInfo.pTessellationState = NULL;
 
-    ASSERT(vkCreateGraphicsPipelines(core->logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, NULL, &core->pipeline) == VK_SUCCESS, "Failed to create graphics pipeline");
-    
+    ASSERT(vkCreateGraphicsPipelines(core->logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, NULL, &core->pipeline) ==
+                   VK_SUCCESS,
+           "Failed to create graphics pipeline");
+
     vkDestroyShaderModule(core->logicalDevice, fragShaderModule, NULL);
     vkDestroyShaderModule(core->logicalDevice, vertShaderModule, NULL);
     free(vertShaderCode);
     free(fragShaderCode);
 }
 
-void create_shaders(VulkanCore* core){
+void create_shaders(VulkanCore* core) {
 
     char* vertShaderCode;
     size_t vertShaderSize;
@@ -134,27 +136,28 @@ void create_shaders(VulkanCore* core){
     VkPipelineShaderStageCreateInfo fragShaderStageInfo;
     create_fragment_shader_stage_info(fragShaderModule, &fragShaderStageInfo);
 
-    VkPipelineShaderStageCreateInfo* stages = (VkPipelineShaderStageCreateInfo*) malloc(sizeof(VkPipelineShaderStageCreateInfo) * 2);
+    VkPipelineShaderStageCreateInfo* stages =
+            (VkPipelineShaderStageCreateInfo*) malloc(sizeof(VkPipelineShaderStageCreateInfo) * 2);
     stages[0] = vertShaderStageInfo;
     stages[1] = fragShaderStageInfo;
 
     core->shaderStageInfo = stages;
-
 }
 
-void create_pipeline_layout(VulkanCore* core){
+void create_pipeline_layout(VulkanCore* core) {
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo;
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 0; // Optional
-    pipelineLayoutInfo.pSetLayouts = NULL; // Optional
+    pipelineLayoutInfo.setLayoutCount = 0;         // Optional
+    pipelineLayoutInfo.pSetLayouts = NULL;         // Optional
     pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
     pipelineLayoutInfo.pPushConstantRanges = NULL; // Optional
     pipelineLayoutInfo.flags = 0;
     pipelineLayoutInfo.pNext = NULL;
 
 
-    ASSERT(vkCreatePipelineLayout(core->logicalDevice, &pipelineLayoutInfo, NULL, &core->pipelineLayout) == VK_SUCCESS, "Failed to create pipeline layout");
+    ASSERT(vkCreatePipelineLayout(core->logicalDevice, &pipelineLayoutInfo, NULL, &core->pipelineLayout) == VK_SUCCESS,
+           "Failed to create pipeline layout");
 }
 
 
@@ -163,16 +166,15 @@ void create_dynamic_states(VkPipelineDynamicStateCreateInfo* dynamicStateInfo) {
     dynamicStateInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamicStateInfo->pNext = NULL;
     dynamicStateInfo->flags = 0;
-
 }
 
 void create_vertex_input_stage(VkPipelineVertexInputStateCreateInfo* vertexInputInfo) {
 
     vertexInputInfo->sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertexInputInfo->vertexBindingDescriptionCount = 1;
-    //vertexInputInfo->pVertexBindingDescriptions = &bindingDescription;
+    // vertexInputInfo->pVertexBindingDescriptions = &bindingDescription;
     vertexInputInfo->vertexAttributeDescriptionCount = 2;
-    //vertexInputInfo->pVertexAttributeDescriptions = &attributeList;
+    // vertexInputInfo->pVertexAttributeDescriptions = &attributeList;
     vertexInputInfo->pNext = NULL;
     vertexInputInfo->flags = 0;
 }
@@ -200,17 +202,19 @@ void create_scissor(VulkanCore* core, VkRect2D* scissor) {
     scissor->extent = core->swapChainExtent;
 }
 
-void create_viewport_info(u8 type, VkViewport* viewport, VkRect2D* scissor, VkPipelineViewportStateCreateInfo* viewportState) {
+void create_viewport_info(
+        u8 type, VkViewport* viewport, VkRect2D* scissor, VkPipelineViewportStateCreateInfo* viewportState
+) {
 
-    if(type == VIEWPORT_DYNAMIC){
+    if (type == VIEWPORT_DYNAMIC) {
 
         viewportState->sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
         viewportState->viewportCount = 1;
         viewportState->scissorCount = 1;
-        
+
 
     } else {
-        
+
         viewportState->sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
         viewportState->viewportCount = 1;
         viewportState->pViewports = viewport;
@@ -254,9 +258,10 @@ void create_multisampling_stage(VkPipelineMultisampleStateCreateInfo* multisampl
 
 void create_color_blend_stage(VkPipelineColorBlendAttachmentState* colorBlendAttachment) {
 
-    colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    
-    //For alpha blendining
+    colorBlendAttachment->colorWriteMask =
+            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
+    // For alpha blendining
     colorBlendAttachment->blendEnable = VK_TRUE;
     colorBlendAttachment->srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
     colorBlendAttachment->dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
@@ -266,7 +271,9 @@ void create_color_blend_stage(VkPipelineColorBlendAttachmentState* colorBlendAtt
     colorBlendAttachment->alphaBlendOp = VK_BLEND_OP_ADD;
 }
 
-void create_color_blend_state(VkPipelineColorBlendAttachmentState* colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlending) {
+void create_color_blend_state(
+        VkPipelineColorBlendAttachmentState* colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlending
+) {
 
     colorBlending->sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     colorBlending->logicOpEnable = VK_FALSE;
@@ -291,7 +298,8 @@ void create_shader_module(VkDevice* logicalDevice, const char* code, size_t size
     createInfo.pNext = NULL;
     createInfo.flags = 0;
 
-    ASSERT(vkCreateShaderModule(*logicalDevice, &createInfo, NULL, shaderModule) == VK_SUCCESS, "Failed to create shader module");
+    ASSERT(vkCreateShaderModule(*logicalDevice, &createInfo, NULL, shaderModule) == VK_SUCCESS,
+           "Failed to create shader module");
 }
 
 void create_vertex_shader_stage_info(VkShaderModule vertShaderModule, VkPipelineShaderStageCreateInfo* info) {
@@ -303,7 +311,6 @@ void create_vertex_shader_stage_info(VkShaderModule vertShaderModule, VkPipeline
     info->pNext = NULL;
     info->flags = 0;
     info->pName = "main";
-
 }
 
 void create_fragment_shader_stage_info(VkShaderModule fragShaderModule, VkPipelineShaderStageCreateInfo* info) {
@@ -315,5 +322,4 @@ void create_fragment_shader_stage_info(VkShaderModule fragShaderModule, VkPipeli
     info->pNext = NULL;
     info->flags = 0;
     info->pName = "main";
-
 }

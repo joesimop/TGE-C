@@ -5,7 +5,7 @@ void create_image_views(VulkanCore* core) {
     const u32 imageCount = core->swapChainImageCount;
 
     core->swapChainImageViews = malloc(sizeof(VkImageView) * imageCount);
-    
+
     for (int i = 0; i < imageCount; i++) {
         VkImageViewCreateInfo createInfo;
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -15,22 +15,22 @@ void create_image_views(VulkanCore* core) {
         createInfo.flags = 0;
         createInfo.pNext = NULL;
 
-        //Can set channels to constant value or map all to red for monochrome
+        // Can set channels to constant value or map all to red for monochrome
         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
         createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
         createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
         createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 
-        //Describes the image's purpose and which part of the image should be accessed
+        // Describes the image's purpose and which part of the image should be accessed
         createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         createInfo.subresourceRange.baseMipLevel = 0;
         createInfo.subresourceRange.levelCount = 1;
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        ASSERT(vkCreateImageView(core->logicalDevice, &createInfo, NULL, &(core->swapChainImageViews[i])) == VK_SUCCESS, "Failed to create image views!");
+        ASSERT(vkCreateImageView(core->logicalDevice, &createInfo, NULL, &(core->swapChainImageViews[i])) == VK_SUCCESS,
+               "Failed to create image views!");
     }
-
 }
 
 void destroy_image_views(VulkanCore* core) {
@@ -39,4 +39,3 @@ void destroy_image_views(VulkanCore* core) {
     }
     free(core->swapChainImageViews);
 }
-
